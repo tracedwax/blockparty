@@ -23,7 +23,7 @@ const getTransaction = function(type, transactionHash){
   trxReceipt = web3.eth.getTransactionReceipt(transactionHash)
   gasUsed = trxReceipt.gasUsed * trx.gasPrice;
   result = {
-    'type             ': type,
+    'type             	': type,
     'gasUsed       ': trxReceipt.gasUsed,
     'gasPrice': web3.fromWei(trx.gasPrice.toNumber(),'gwei'),
     '1ETH*USD': usd,
@@ -42,9 +42,10 @@ const reportTest = async function (participants, accounts){
   const transactions = [];
   const encrypted_codes = [];
   const owner = accounts[0];
-  confirmation = await ConfirmationRepository.new();
+  confirmation = await ConfirmationRepository.new({gasPrice:gasPrice});
   conference = await Conference.new('Test', 0, participants, 0, confirmation.address, '', {gasPrice:gasPrice});
-  transactions.push(getTransaction('create   ', conference.transactionHash))
+  transactions.push(getTransaction('confirmation create   ', confirmation.transactionHash))
+  transactions.push(getTransaction('conference   create   ', conference.transactionHash))
   deposit = (await conference.deposit.call()).toNumber();
 
   for (var i = 0; i < participants; i++) {
@@ -54,7 +55,7 @@ const reportTest = async function (participants, accounts){
     console.log('error on addMultipleTrx', a);
   });
   if (addMultipleTrx) {
-    transactions.push(getTransaction('addConfirmation', addMultipleTrx.tx));
+    transactions.push(getTransaction('confirmation add', addMultipleTrx.tx));
   }
   for (var i = 0; i < participants; i++) {
     var registerTrx = await conference.register('test', {from:accounts[i], value:deposit, gasPrice:gasPrice});
@@ -62,22 +63,22 @@ const reportTest = async function (participants, accounts){
       console.log('register', i)
     }
     if (i == 0) {
-      transactions.push(getTransaction('register', registerTrx.tx))
+      transactions.push(getTransaction('conference   register', registerTrx.tx))
     }
     addresses.push(accounts[i]);
   }
   var attendTrx = await conference.attend(addresses, {from:owner, gasPrice:gasPrice});
-  transactions.push(getTransaction('batchAttend  ', attendTrx.tx))
+  transactions.push(getTransaction('conference   attend', attendTrx.tx))
 
   assert.strictEqual((await conference.registered.call()).toNumber(), participants);
   assert.strictEqual(web3.eth.getBalance(conference.address).toNumber(), deposit * participants)
 
   trx = await conference.payback({from:owner, gasPrice:gasPrice});
-  transactions.push(getTransaction('payback ', trx.tx))
+  transactions.push(getTransaction('conference   payback ', trx.tx))
   for (var i = 0; i < participants; i++) {
     trx = await conference.withdraw({from:accounts[i], gasPrice:gasPrice});
     if (i == 0) {
-      transactions.push(getTransaction('withdraw', trx.tx))
+      transactions.push(getTransaction('conference   withdraw', trx.tx))
     }
   }
   var header = Object.keys(transactions[0]).join("\t");
