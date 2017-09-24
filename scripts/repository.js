@@ -4,13 +4,14 @@ let ConfirmationRepository = artifacts.require("./ConfirmationRepository.sol");
 let repository;
 let arg = require('yargs').argv;
 
-if (!(arg.i && arg.t)) {
-  throw('usage: truffle exec scripts/repository.js -t confirmation -i codes.txt');
+if (!(arg.i && arg.t && arg.c)) {
+  throw('usage: truffle exec scripts/repository.js -t confirmation -i codes.txt -c conference_address');
 }
 
 module.exports = async function(callback) {
   let gas = await setGas(web3);
   let file = arg.i;
+  let conference_address = arg.c;
   console.log('file', file)
   switch (arg.t) {
     case 'confirmation':
@@ -29,7 +30,7 @@ module.exports = async function(callback) {
       var claimed = await repository.report.call(code);
       console.log('code', code, ' is already registered. Claimed by ', claimed);
     }else{
-      var encrypted_code = await repository.encrypt.call(code);
+      var encrypted_code = await repository.encrypt.call(code, conference_address);
       console.log('Adding', code, ' as ', encrypted_code);
       encrypted_codes.push(encrypted_code);
     }
