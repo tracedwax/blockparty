@@ -49,7 +49,7 @@ const reportTest = async function (participants, accounts){
   deposit = (await conference.deposit.call()).toNumber();
 
   for (var i = 0; i < participants; i++) {
-    encrypted_codes.push(await confirmation.encrypt.call(accounts[i]));
+    encrypted_codes.push(await confirmation.encrypt.call(accounts[i], conference.address));
   }
   var addMultipleTrx = await confirmation.addMultiple(encrypted_codes, {gasPrice:gasPrice}).catch(function(a){
     console.log('error on addMultipleTrx', a);

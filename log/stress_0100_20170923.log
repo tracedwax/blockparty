@@ -1,7 +1,7 @@
 type             		gasUsed       	gasPrice	1ETH*USD	gasUsed*gasPrice(Ether)	gasUsed*gasPrice(USD)
-confirmation create   		431950		2		303		0.0008639		0.2617617
-conference   create   		1692580		2		303		0.00338516		1.02570348
-confirmation add		3380843		2		303		0.006761686		2.0487908580000003
+confirmation create   		463377		2		303		0.000926754		0.280806462
+conference   create   		1694928		2		303		0.003389856		1.027126368
+confirmation add		245960		2		303		0.00049192		0.14905175999999998
 conference   register		119815		2		303		0.00023963		0.07260789000000001
 conference   attend		1503282		2		303		0.003006564		0.9109888920000001
 conference   payback 		84325		2		303		0.00016865		0.05110095

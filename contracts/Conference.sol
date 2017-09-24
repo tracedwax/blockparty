@@ -80,7 +80,7 @@ contract Conference is Destructible {
 	}
 
 	modifier ifConfirmed(bytes32 _code){
-		require(confirmationRepository.claim(_code, msg.sender));
+		require(confirmationRepository.claim(_code, msg.sender, address(this)));
 		_;
 	}
 
