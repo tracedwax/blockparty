@@ -105,4 +105,36 @@ contract('InvitationRepository', function(accounts) {
       assert.equal(result, false);
     });
   })
+
+  describe('Shared code example', function(){
+    it.only("can claim", async function() {
+      let first_participant = accounts[4];
+      let second_participant = accounts[5];
+      let first_salt = '1';
+      let second_salt = '2';
+      let shared_code = web3.fromUtf8('somecomplexstring');
+      let instance = await InvitationRepository.new()
+      // Encrypt code twice for each user.
+      let first_hashed_code = web3.sha3(first_salt, shared_code);
+      let second_hashed_code = web3.sha3(second_salt, shared_code);
+      let first_encrypted_code = await instance.encrypt.call(first_hashed_code, contract_address);
+      let second_encrypted_code = await instance.encrypt.call(second_hashed_code, contract_address);
+      // Add the dobule Encrypt code into an invitation smart contract.
+      await instance.add(first_encrypted_code, {from:owner});
+      await instance.add(second_encrypted_code, {from:owner});
+      // Give the salt to each user when they register.
+      let first_participant_salt = first_salt;
+      let second_participant_salt = second_salt;
+      // Users come to the event.
+      // Announce the salt to each user.
+      // Each user hash the code with the given salt
+      let first_participant_salt_with_shared_code = web3.sha3(first_participant_salt, shared_code);
+      let second_participant_salt_with_shared_code = web3.sha3(second_participant_salt, shared_code);
+      // BlockParty contract checks
+      await instance.claim(first_participant_salt_with_shared_code, first_participant, contract_address, {from:owner});
+      await instance.claim(second_participant_salt_with_shared_code, second_participant, contract_address, {from:owner});
+      assert.equal((await instance.report.call(first_participant, contract_address)), first_participant);
+      assert.equal((await instance.report.call(second_participant, contract_address)), second_participant);
+    });
+  })
 });
