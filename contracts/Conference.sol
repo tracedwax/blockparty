@@ -19,6 +19,8 @@ contract Conference is Destructible {
 	string public encryption;
 
 	mapping (address => Participant) public participants;
+	address[] public participantsAddresses;
+	/* will leave it for compatibility purpose */
 	mapping (uint => address) public participantsIndex;
 	bool paid;
 
@@ -107,6 +109,7 @@ contract Conference is Destructible {
 
 		registered++;
 		participantsIndex[registered] = msg.sender;
+		participantsAddresses.push(msg.sender);
 		participants[msg.sender] = Participant(_participant, msg.sender, false, false);
 	}
 
@@ -133,6 +136,10 @@ contract Conference is Destructible {
 	}
 
 	/* Constants */
+	function getParticipants() constant returns (address[]){
+		return participantsAddresses;
+	}
+
 	function totalBalance() constant returns (uint256){
 		return this.balance;
 	}

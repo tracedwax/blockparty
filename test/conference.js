@@ -23,6 +23,13 @@ contract('Conference', function(accounts) {
     deposit = (await conference.deposit.call()).toNumber();
   })
 
+  it('returns participants', async function(){
+    await conference.register(twitterHandle, {value:deposit, from:owner});
+    await conference.register(twitterHandle, {value:deposit, from:non_owner});
+    let participants = await conference.getParticipants.call();
+    assert.deepEqual(participants, [owner, non_owner]);
+  })
+
   describe('on setLimitOfParticipants', function(){
     it('does not allow to register more than the limit', async function(){
       await conference.setLimitOfParticipants(1)
