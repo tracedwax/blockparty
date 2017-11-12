@@ -184,23 +184,14 @@ window.onload = function() {
       contract
         .then(function(_instance){
           instance = _instance;
-          return instance.registered.call();
+          return instance.getParticipants.call();
         })
-        .then(value => {
-          let participantsArray = [];
+        .then(addresses => {
           let participants = [];
-          for (var i = 1; i <= value.toNumber(); i++) {
-            participantsArray.push(i);
-          }
-          participantsArray.map(index => {
-            console.log('participantsArray', index)
-            return instance.participantsIndex.call(index)
-              .then(address => {
-                console.log('instance.participants.call', index, address)
-                return instance.participants.call(address);
-              })
+          addresses.map(address => {
+            return instance.participants.call(address)
               .then(function(array){
-                console.log('array', array)
+                console.log('array', address, array)
                 if(array) {
                   var participant =  {
                     name: array[0],
@@ -210,7 +201,6 @@ window.onload = function() {
                   }
                   participants.push(participant);
                   eventEmitter.emit('participants_updated', participants);
-                  callback(participants);
                 }
               })
           })
@@ -323,6 +313,7 @@ window.onload = function() {
     // bignumber.js:1177 Uncaught BigNumber Error: new BigNumber() not a base 16 number:
     setTimeout(getAccounts, 100)
     setTimeout(getDetail, 100)
+    setTimeout(getParticipants, 100)
     eventEmitter.emit('network', network_obj);
   })
 }

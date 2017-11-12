@@ -37,16 +37,16 @@ class Participants extends React.Component {
 
   componentDidMount(){
     // Initialize
-    this.props.getParticipants(participants =>{
+    this.props.eventEmitter.on('participants_updated', participants => {
+      console.log('setState participants')
       this.setState({participants});
     });
 
     this.props.eventEmitter.on('change', _ => {
       console.log('CHANGE', _);
-      this.props.getParticipants(participants =>{
-        this.setState({participants});
-      });
+      this.props.getParticipants()
     });
+
     this.props.eventEmitter.on('accounts_received', accounts => {
       this.setState({
         address:accounts[0],
