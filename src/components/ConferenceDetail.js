@@ -18,8 +18,6 @@ const getEtherIcon = () =>(
 
 const styles = {
   paperLeft:{
-    flex: 2,
-    height: '100%',
     textAlign: 'left',
     padding: 10
   },
@@ -83,13 +81,13 @@ class ConferenceDetail extends React.Component {
     if(name){
       if (this.state.etherscan_url) {
         return (
-          <span style={styles.list}>
+          <span>
             {name} (<a target='_blank' href={ `${this.state.etherscan_url}/address/${contractAddress}` }>{contractAddress.slice(0,5)}...</a>)
           </span>
         )
       }else{
         return (
-          <span style={styles.list}>
+          <span>
             {name} ({contractAddress.slice(0,5)}...)
           </span>
         )
@@ -143,13 +141,8 @@ class ConferenceDetail extends React.Component {
 
     return (
       <Paper zDepth={1} style={styles.paperLeft}>
-        <h4 style={{textAlign:'center'}}>Event Info</h4>
+        <h4 style={{textAlign:'center'}}>{this.getNameContent(this.state.name, this.props.contractAddress)}</h4>
         <List>
-          <ListItem innerDivStyle={styles.innerDiv} insetChildren={true} disabled={true}
-            primaryText={
-              <p>Name{this.getNameContent(this.state.name, this.props.contractAddress)}</p>
-            }
-          />
           <ListItem innerDivStyle={styles.innerDiv} leftIcon={<EventIcon />} disabled={true}
             primaryText={
               <p>Date{this.getDateContent(this.state.date)}</p>

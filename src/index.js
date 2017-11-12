@@ -179,7 +179,6 @@ window.onload = function() {
 
     function getParticipants(callback){
       if (!contract) return false;
-
       var instance;
 
       contract
@@ -188,29 +187,32 @@ window.onload = function() {
           return instance.registered.call();
         })
         .then(value => {
-          let participantsArray = []
+          let participantsArray = [];
+          let participants = [];
           for (var i = 1; i <= value.toNumber(); i++) {
             participantsArray.push(i);
           }
-          Promise.all(participantsArray.map(index => {
-            return instance.participantsIndex.call(index).then(address => {
-              return instance.participants.call(address);
-            })
-          })).then(function(participants){
-            return participants.map(participant => {
-              var object =  {
-                name: participant[0],
-                address: participant[1],
-                attended: participant[2],
-                paid: participant[3]
-              }
-              return object
-            })
-          }).then(participant => {
-            if(participant) {
-              eventEmitter.emit('participants_updated', participant);
-              callback(participant);
-            }
+          participantsArray.map(index => {
+            console.log('participantsArray', index)
+            return instance.participantsIndex.call(index)
+              .then(address => {
+                console.log('instance.participants.call', index, address)
+                return instance.participants.call(address);
+              })
+              .then(function(array){
+                console.log('array', array)
+                if(array) {
+                  var participant =  {
+                    name: array[0],
+                    address: array[1],
+                    attended: array[2],
+                    paid: array[3]
+                  }
+                  participants.push(participant);
+                  eventEmitter.emit('participants_updated', participants);
+                  callback(participants);
+                }
+              })
           })
         })
     }
@@ -291,10 +293,12 @@ window.onload = function() {
             <Instruction eventEmitter={eventEmitter} />
             <Notification eventEmitter={eventEmitter} />
             <div className='container' class='foo'>
-              <ConferenceDetail eventEmitter={eventEmitter} getDetail={getDetail} web3={web3} contract={contract} web3={web3} contractAddress={contractAddress} />
+              <div className='control'>
+                <ConferenceDetail eventEmitter={eventEmitter} getDetail={getDetail} web3={web3} contract={contract} web3={web3} contractAddress={contractAddress} />
+                <FormInput read_only={read_only} eventEmitter={eventEmitter} getAccounts={getAccounts} getDetail={getDetail} action={action} />
+              </div>
               <Participants eventEmitter={eventEmitter} getDetail={getDetail} getParticipants={getParticipants} getAccounts={getAccounts} action={action} web3={web3}  />
             </div>
-            <FormInput read_only={read_only} eventEmitter={eventEmitter} getAccounts={getAccounts} getDetail={getDetail} action={action} />
           </div>
         </MuiThemeProvider>
       </div>

@@ -9,6 +9,7 @@ import Avatar from 'material-ui/Avatar';
 import RaisedButton from 'material-ui/RaisedButton';
 import Checkbox from 'material-ui/Checkbox';
 import math from 'mathjs';
+import LinearProgress from 'material-ui/LinearProgress';
 import participantStatus from '../util/participantStatus';
 
 const getTwitterIcon = (name) =>(
@@ -17,7 +18,6 @@ const getTwitterIcon = (name) =>(
 
 const styles = {
   paperRight:{
-    flex: 3,
     textAlign: 'center',
   }
 };
@@ -115,7 +115,6 @@ class Participants extends React.Component {
 
   displayBalance(participant){
     var message = participantStatus(participant, this.state.detail);
-    console.log('status', message);
     let color, amount;
     switch(message) {
     case 'Won':
@@ -140,6 +139,19 @@ class Participants extends React.Component {
         { amountToDisplay } {message}
       </span>
     )
+  }
+  displayProgress(){
+    if (!this.state.detail.registered) return false;
+    if(this.state.participants.length != this.state.detail.registered.toNumber()){
+      var progress = this.state.participants.length / this.state.detail.registered.toNumber() * 100;
+      console.log('progress', progress);
+      return(
+        <div>
+          <div className='loading'>Loading participants({this.state.participants.length}/{this.state.detail.registered.toNumber()})</div>
+          <LinearProgress mode="determinate" value={progress} />
+        </div>
+      )
+    }
   }
 
   displayParticipants(){
@@ -197,6 +209,7 @@ class Participants extends React.Component {
     return (
       <Paper zDepth={1} style={styles.paperRight}>
           <h4>Participants</h4>
+          {this.displayProgress()}
           <Table>
             <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
               <TableRow>
