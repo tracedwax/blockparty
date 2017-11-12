@@ -121,10 +121,10 @@ class ConferenceDetail extends React.Component {
     }
   }
 
-  getDepositContent(deposit, rate){
+  getDepositContent(deposit, rate, balance){
     if(deposit){
       return (
-        <span style={styles.list}> ETH {this.toEther(deposit)}</span>
+        <span style={styles.list}> ETH {this.toEther(deposit)} (ETH {this.toEther(balance)})</span>
       )
     }else{
       return (
@@ -175,14 +175,8 @@ class ConferenceDetail extends React.Component {
           />
           <ListItem innerDivStyle={styles.innerDiv} leftIcon={getEtherIcon()} disabled={true}
             primaryText={
-              <p>Deposit{this.getDepositContent(this.state.deposit, this.state.rate)}</p>
+              <p>Deposit(total pot){this.getDepositContent(this.state.deposit, this.state.rate, this.state.totalBalance)}</p>
             }
-          />
-        <Divider />
-          <ListItem innerDivStyle={styles.innerDiv} leftIcon={getEtherIcon()} disabled={true}
-          primaryText={
-            <p>Pot<span style={styles.list}>{this.toEther(this.state.totalBalance)}</span></p>
-          }
           />
           <ListItem innerDivStyle={styles.innerDiv} leftIcon={<PeopleIcon />} disabled={true}
           primaryText={attendancyStatus}
