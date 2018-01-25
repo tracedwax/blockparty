@@ -224,7 +224,7 @@ window.onload = function() {
         args = [];
       }
       if (name == "register" || name == "registerWithEncryption") {
-        options.value = Math.pow(10,18) / 20;
+        options.value = Math.pow(10,18) / 50;
       }
       args.push(options);
       contract.then(function(instance){
