@@ -215,7 +215,7 @@ window.onload = function() {
         })
     }
     var gas = 1000000;
-    var gasPrice = web3.toWei(1, 'gwei');
+    var gasPrice = web3.toWei(20, 'gwei');
     window.eventEmitter = eventEmitter;
     function action(name, address, args) {
       var options = {from:address, gas:gas, gasPrice:gasPrice }
